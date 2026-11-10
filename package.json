@@ -1,6 +1,6 @@
 {
   "name": "fxforge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scaffold, lint and package FiveM resources from your terminal. Zero dependencies.",
   "type": "module",
   "bin": {
