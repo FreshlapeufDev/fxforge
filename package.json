@@ -1,0 +1,35 @@
+{
+  "name": "fxforge",
+  "version": "1.0.0",
+  "description": "Scaffold, lint and package FiveM resources from your terminal. Zero dependencies.",
+  "type": "module",
+  "bin": {
+    "fxforge": "bin/fxforge.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "fivem",
+    "cfx",
+    "gta5",
+    "lua",
+    "esx",
+    "qbcore",
+    "qbox",
+    "scaffold",
+    "cli",
+    "fxmanifest"
+  ],
+  "author": "FreshDev (Fresh&Dev)",
+  "license": "MIT"
+}
