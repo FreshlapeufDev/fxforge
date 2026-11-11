@@ -5,13 +5,12 @@ import { check } from './commands/check.js';
 import { create } from './commands/create.js';
 import { pack } from './commands/pack.js';
 import { FxError } from './errors.js';
-import { c } from './ui.js';
+import { renderBanner } from './banner.js';
+import { c, setBanner } from './ui.js';
 
 const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
-const help = () => `
- ${c.orange('▲')} ${c.bold('fxforge')} ${c.gray(`v${pkg.version}`)} ${c.gray('— scaffold, lint and package FiveM resources')}
-
+const help = (logo) => `${logo ? renderBanner('fxforge', `v${pkg.version} · scaffold, lint and package FiveM resources · crafted by FreshDev`) : `\n ${c.orange('▲')} ${c.bold('fxforge')} ${c.gray(`v${pkg.version}`)} ${c.gray('— scaffold, lint and package FiveM resources')}\n`}
  ${c.bold('Usage')}
    fxforge <command> [options]
 
@@ -38,6 +37,10 @@ const help = () => `
    --force            pack even if check finds errors
    --verbose          list left-out files
 
+ ${c.bold('Global')}
+   --no-banner        hide the FreshDev logo
+   -v, --version      print the version
+
  ${c.bold('Examples')}
    ${c.gray('$')} fxforge create garage --framework esx --nui vanilla
    ${c.gray('$')} fxforge check ./resources/[local]/garage
@@ -59,13 +62,14 @@ const COMMANDS = {
 export async function run(argv) {
   const { positional, flags } = parseArgs(argv);
   const [command, ...rest] = positional;
+  setBanner(!flags['no-banner']);
 
   if (flags.version || flags.v) {
     console.log(pkg.version);
     return 0;
   }
   if (!command || flags.help || flags.h || command === 'help') {
-    console.log(help());
+    console.log(help(!flags['no-banner']));
     return 0;
   }
   const handler = COMMANDS[command];

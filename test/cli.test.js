@@ -135,3 +135,16 @@ test('help, version and unknown command', (t) => {
   assert.match(cli(['--version'], dir).out, /^\d+\.\d+\.\d+/);
   assert.equal(cli(['explode'], dir).code, 1);
 });
+
+test('FreshDev logo is shown by default and hidden with --no-banner or --json', (t) => {
+  const dir = sandbox(t);
+  const created = cli(['create', 'logo', '--yes', '--no-git'], dir).out;
+  assert.match(created, /███████╗██████╗/);
+  assert.match(created, /crafted by FreshDev/);
+  const plain = cli(['check', 'logo', '--no-banner'], dir).out;
+  assert.doesNotMatch(plain, /███/);
+  assert.match(plain, /▲ fxforge · check logo/);
+  assert.doesNotMatch(cli(['check', 'logo', '--json'], dir).out, /███/);
+  assert.match(cli(['--help'], dir).out, /crafted by FreshDev/);
+  assert.doesNotMatch(cli(['--help', '--no-banner'], dir).out, /███/);
+});

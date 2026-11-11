@@ -1,4 +1,4 @@
-const BOOLEAN_FLAGS = new Set(['yes', 'y', 'force', 'help', 'h', 'version', 'v', 'json', 'strict', 'all', 'no-git', 'verbose']);
+const BOOLEAN_FLAGS = new Set(['yes', 'y', 'force', 'help', 'h', 'version', 'v', 'json', 'strict', 'all', 'no-git', 'verbose', 'no-banner']);
 
 export function parseArgs(argv) {
   const positional = [];

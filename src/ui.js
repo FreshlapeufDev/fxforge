@@ -1,4 +1,9 @@
-const enabled = Boolean(process.stdout.isTTY) && !process.env.NO_COLOR;
+import { readFileSync } from 'node:fs';
+import { renderBanner } from './banner.js';
+
+const VERSION = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
+
+const enabled = (Boolean(process.stdout.isTTY) || Boolean(process.env.FORCE_COLOR)) && !process.env.NO_COLOR;
 
 const wrap = (code) => (text) => (enabled ? `\x1b[${code}m${text}\x1b[0m` : String(text));
 
@@ -15,9 +20,18 @@ export const c = {
   orange: wrap('38;5;208'),
 };
 
+let showLogo = true;
+
+export function setBanner(enabled) {
+  showLogo = enabled;
+}
+
 export function banner(subtitle) {
-  const mark = c.orange('▲');
-  console.log(`\n ${mark} ${c.bold('fxforge')} ${c.gray('·')} ${c.gray(subtitle)}\n`);
+  if (showLogo) {
+    console.log(renderBanner('fxforge', `v${VERSION} · ${subtitle} · crafted by FreshDev`));
+    return;
+  }
+  console.log(`\n ${c.orange('▲')} ${c.bold('fxforge')} ${c.gray('·')} ${c.gray(subtitle)}\n`);
 }
 
 export function printTree(paths) {

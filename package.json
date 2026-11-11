@@ -10,6 +10,7 @@
     "bin",
     "src",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "scripts": {
@@ -31,5 +32,13 @@
     "fxmanifest"
   ],
   "author": "FreshDev (Fresh&Dev)",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FreshlapeufDev/fxforge.git"
+  },
+  "homepage": "https://github.com/FreshlapeufDev/fxforge#readme",
+  "bugs": {
+    "url": "https://github.com/FreshlapeufDev/fxforge/issues"
+  }
 }

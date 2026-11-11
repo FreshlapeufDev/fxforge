@@ -15,34 +15,7 @@ Aucune dépendance · ESX · QBCore · Qbox · Standalone
 
 </div>
 
-```
-$ npx fxforge create garage --framework esx --nui vanilla
-
- ▲ fxforge · create a resource
-
-✔ Created garage (ESX Legacy · HTML / CSS / JS (no build step))
-
-  └─ garage/
-     ├─ bridge/
-     │  ├─ client.lua
-     │  └─ server.lua
-     ├─ client/
-     │  └─ main.lua
-     ├─ locales/
-     │  ├─ en.lua
-     │  └─ fr.lua
-     ├─ server/
-     │  └─ main.lua
-     ├─ shared/
-     │  └─ locale.lua
-     ├─ web/
-     │  ├─ app.js
-     │  ├─ index.html
-     │  └─ style.css
-     ├─ config.lua
-     ├─ fxmanifest.lua
-     └─ README.md
-```
+<p align="center"><img src="docs/console.png" alt="Sortie console de fxforge" width="760"></p>
 
 ## Pourquoi
 
@@ -75,6 +48,8 @@ npx fxforge create ma_resource
 | [`fxforge check [dossier]`](#fxforge-check-dossier) | vérifier le `fxmanifest.lua` par rapport aux fichiers |
 | [`fxforge pack [dossier]`](#fxforge-pack-dossier) | créer un `.zip` de release propre |
 | [`fxforge add <type> [nom]`](#fxforge-add-type-nom) | ajouter un script, une langue ou une NUI |
+
+Chaque commande s'ouvre sur le logo FreshDev. Ajoute `--no-banner` pour le masquer, par exemple dans un script ou en intégration continue.
 
 ### `fxforge create [nom]`
 
@@ -198,6 +173,8 @@ npm link
 `npm link` fait pointer la commande `fxforge` globale vers ta copie locale.
 
 Aucune dépendance à l'exécution : l'analyseur de manifest, le moteur de motifs et la création de zip sont écrits de zéro avec la bibliothèque standard de Node.
+
+Les changements de chaque version sont listés dans le [CHANGELOG.md](https://github.com/FreshlapeufDev/fxforge/blob/main/CHANGELOG.md).
 
 Un bug ou une idée ? [Ouvre une issue](https://github.com/FreshlapeufDev/fxforge/issues).
 

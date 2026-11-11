@@ -15,34 +15,7 @@ Zero dependencies · ESX · QBCore · Qbox · Standalone
 
 </div>
 
-```
-$ npx fxforge create garage --framework esx --nui vanilla
-
- ▲ fxforge · create a resource
-
-✔ Created garage (ESX Legacy · HTML / CSS / JS (no build step))
-
-  └─ garage/
-     ├─ bridge/
-     │  ├─ client.lua
-     │  └─ server.lua
-     ├─ client/
-     │  └─ main.lua
-     ├─ locales/
-     │  ├─ en.lua
-     │  └─ fr.lua
-     ├─ server/
-     │  └─ main.lua
-     ├─ shared/
-     │  └─ locale.lua
-     ├─ web/
-     │  ├─ app.js
-     │  ├─ index.html
-     │  └─ style.css
-     ├─ config.lua
-     ├─ fxmanifest.lua
-     └─ README.md
-```
+<p align="center"><img src="docs/console.png" alt="fxforge console output" width="760"></p>
 
 ## Why
 
@@ -75,6 +48,8 @@ npx fxforge create my_resource
 | [`fxforge check [dir]`](#fxforge-check-dir) | lint `fxmanifest.lua` against the files on disk |
 | [`fxforge pack [dir]`](#fxforge-pack-dir) | build a clean release `.zip` |
 | [`fxforge add <kind> [name]`](#fxforge-add-kind-name) | add a script, a locale or a NUI to a resource |
+
+Every command starts with the FreshDev logo. Add `--no-banner` to hide it, for example in scripts or CI logs.
 
 ### `fxforge create [name]`
 
@@ -198,6 +173,8 @@ npm link
 `npm link` makes the global `fxforge` command use your local copy.
 
 There is no runtime dependency: the manifest parser, the glob matcher and the zip writer are written from scratch on top of Node's standard library.
+
+What changed in each version: [CHANGELOG.md](https://github.com/FreshlapeufDev/fxforge/blob/main/CHANGELOG.md).
 
 Bug or idea? [Open an issue](https://github.com/FreshlapeufDev/fxforge/issues).
 
