@@ -4,7 +4,14 @@
 
 **Scaffold, lint and package FiveM resources from your terminal.**
 
-Zero dependencies · Node 18+ · ESX · QBCore · Qbox · Standalone
+[![npm](https://img.shields.io/npm/v/fxforge?color=ff7a1a&label=npm)](https://www.npmjs.com/package/fxforge)
+[![CI](https://github.com/FreshlapeufDev/fxforge/actions/workflows/ci.yml/badge.svg)](https://github.com/FreshlapeufDev/fxforge/actions/workflows/ci.yml)
+[![node](https://img.shields.io/node/v/fxforge?color=339933)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/fxforge?color=blue)](https://github.com/FreshlapeufDev/fxforge/blob/main/LICENSE)
+
+Zero dependencies · ESX · QBCore · Qbox · Standalone
+
+**English** · [Français](https://github.com/FreshlapeufDev/fxforge/blob/main/README.fr.md)
 
 </div>
 
@@ -16,21 +23,37 @@ $ npx fxforge create garage --framework esx --nui vanilla
 ✔ Created garage (ESX Legacy · HTML / CSS / JS (no build step))
 
   └─ garage/
-     ├─ bridge/      client.lua · server.lua
-     ├─ client/      main.lua
-     ├─ locales/     en.lua · fr.lua
-     ├─ server/      main.lua
-     ├─ shared/      locale.lua
-     ├─ web/         index.html · style.css · app.js
+     ├─ bridge/
+     │  ├─ client.lua
+     │  └─ server.lua
+     ├─ client/
+     │  └─ main.lua
+     ├─ locales/
+     │  ├─ en.lua
+     │  └─ fr.lua
+     ├─ server/
+     │  └─ main.lua
+     ├─ shared/
+     │  └─ locale.lua
+     ├─ web/
+     │  ├─ app.js
+     │  ├─ index.html
+     │  └─ style.css
      ├─ config.lua
-     └─ fxmanifest.lua
+     ├─ fxmanifest.lua
+     └─ README.md
 ```
 
 ## Why
 
-Every FiveM resource starts the same way: copy an old folder, rename events, fix the manifest, forget a file in `files {}`, and discover in game that the UI is blank. And once it works on your Windows dev server, it breaks on the Linux production box because of a capital letter.
+Every FiveM resource starts the same way: copy an old folder, rename the events, fix the manifest, forget a file in `files {}`, and discover in game that the UI is blank. Then it works on your Windows dev server and breaks on the Linux production box because of one capital letter.
 
-fxforge handles the boring part and catches those mistakes **before** you `ensure`.
+fxforge does the boring part for you and catches those mistakes **before** you `ensure`.
+
+## Requirements
+
+- [Node.js](https://nodejs.org) 18 or newer (pick the **LTS** version). npm comes with it.
+- Works on Windows, Linux and macOS.
 
 ## Install
 
@@ -38,7 +61,7 @@ fxforge handles the boring part and catches those mistakes **before** you `ensur
 npm install -g fxforge
 ```
 
-or run it once without installing:
+or run it once without installing anything:
 
 ```bash
 npx fxforge create my_resource
@@ -46,50 +69,38 @@ npx fxforge create my_resource
 
 ## Commands
 
+| Command | What it does |
+|---|---|
+| [`fxforge create [name]`](#fxforge-create-name) | generate a ready-to-run resource |
+| [`fxforge check [dir]`](#fxforge-check-dir) | lint `fxmanifest.lua` against the files on disk |
+| [`fxforge pack [dir]`](#fxforge-pack-dir) | build a clean release `.zip` |
+| [`fxforge add <kind> [name]`](#fxforge-add-kind-name) | add a script, a locale or a NUI to a resource |
+
 ### `fxforge create [name]`
 
-Generates a ready-to-run resource. Without flags it asks you a few questions.
+Generates a resource that runs as soon as you `ensure` it. Without flags, it asks you a few questions.
 
 | Flag | Values | Default |
 |---|---|---|
 | `--framework` | `standalone` `esx` `qbcore` `qbox` | `standalone` |
 | `--nui` | `none` `vanilla` `vite` | `none` |
 | `--locale` | `en` `fr` | `en` |
-| `--description` / `--author` | text | git user name |
+| `--description` | text | `A FiveM resource` |
+| `--author` | text | your git user name |
 | `--dir` | parent folder | current folder |
 | `--no-git` `--force` `-y` | | |
 
 What you get:
 
 - a clean `fxmanifest.lua` with `lua54`, metadata and the right dependencies
-- a **bridge layer** (`Bridge.Notify`, `Bridge.GetIdentifier`) written for the chosen framework, so your game logic stays framework-agnostic
-- a tiny locale system (`Lang('key', ...)`) with English and French
-- a working command → server event round trip
-- optionally a NUI, either plain HTML/CSS/JS or **Vite + TypeScript** wired to `web/dist`
+- a **bridge layer** (`Bridge.Notify`, `Bridge.GetIdentifier`) written for the chosen framework, so your game logic does not depend on it
+- a small locale system (`Lang('key', ...)`) with English and French
+- a working command → server event round trip to build on
+- optionally a NUI, either plain HTML/CSS/JS or **Vite + TypeScript** built into `web/dist`
 
 ### `fxforge check [dir]`
 
-Parses `fxmanifest.lua` (real tokenizer, comments and long strings included) and verifies it against the files on disk.
-
-| Code | Level | What it catches |
-|---|---|---|
-| `case-mismatch` | error | `Client/Main.lua` vs `client/main.lua`: fine on Windows, broken on Linux |
-| `missing-file` | error | referenced file that does not exist (with a hint for unbuilt UIs) |
-| `server-file-exposed` | error | server script also listed in `files`, so **every client downloads it** |
-| `ui-page-not-shipped` | error | `ui_page` not in `files`: blank screen in game |
-| `nui-asset-not-shipped` | error | CSS/JS loaded by your HTML but not shipped: 404 in game |
-| `unknown-fx-version` / `missing-game` | error | invalid manifest header |
-| `legacy-manifest` | error | old `__resource.lua` |
-| `undeclared-dependency` | warn | `@ox_lib/init.lua` used without `dependency 'ox_lib'` |
-| `client-server-overlap` | warn | same file loaded on both sides instead of `shared_scripts` |
-| `empty-glob` | warn | `client/*.lua` that matches nothing |
-| `data-file-not-shipped` | warn | `data_file` whose file is not in `files` |
-| `lua54-missing` | warn | Lua 5.4 not enabled |
-| `outdated-fx-version` | warn | `bodacious` / `adamant` |
-| `duplicate-entry` | warn | same entry listed twice |
-| `resource-name` | warn | uppercase or spaces in the folder name |
-| `unreferenced-lua` | info | Lua file never loaded |
-| `missing-metadata` | info | no version, author or description |
+Reads `fxmanifest.lua` with a real tokenizer (comments and long strings included) and checks it against the files on disk.
 
 ```
 $ fxforge check
@@ -99,11 +110,32 @@ $ fxforge check
   ✖ Server script 'server/main.lua' is also listed in files [server-file-exposed]
     ↳ Every client downloads it: never ship server code or secrets
   ▲ '@ox_lib/…' is used but 'ox_lib' is not in dependencies [undeclared-dependency] fxmanifest.lua:7
+    ↳ The resource may start before it and crash
 
   2 errors · 1 warning · 0 info
 ```
 
-Use `--json` for tooling and `--strict` to fail on warnings. The exit code is `1` when errors are found, which makes it perfect for CI:
+| Code | Level | What it catches |
+|---|---|---|
+| `case-mismatch` | error | `Client/Main.lua` vs `client/main.lua`: fine on Windows, broken on Linux |
+| `missing-file` | error | a referenced file that does not exist (with a hint for unbuilt UIs) |
+| `server-file-exposed` | error | a server script also listed in `files`, so **every player downloads it** |
+| `ui-page-not-shipped` | error | `ui_page` missing from `files`: blank screen in game |
+| `nui-asset-not-shipped` | error | CSS or JS loaded by your HTML but not shipped: 404 in game |
+| `unknown-fx-version` / `missing-game` | error | invalid manifest header |
+| `legacy-manifest` | error | old `__resource.lua` |
+| `undeclared-dependency` | warn | `@ox_lib/init.lua` used without `dependency 'ox_lib'` |
+| `client-server-overlap` | warn | the same file loaded on both sides instead of `shared_scripts` |
+| `empty-glob` | warn | a pattern like `client/*.lua` that matches nothing |
+| `data-file-not-shipped` | warn | a `data_file` whose file is not in `files` |
+| `lua54-missing` | warn | Lua 5.4 not enabled |
+| `outdated-fx-version` | warn | `bodacious` or `adamant` |
+| `duplicate-entry` | warn | the same entry listed twice |
+| `resource-name` | warn | uppercase letters or spaces in the folder name |
+| `unreferenced-lua` | info | a Lua file that is never loaded |
+| `missing-metadata` | info | no version, author or description |
+
+Add `--json` for tooling and `--strict` to fail on warnings too. The exit code is `1` when errors are found, so it fits straight into CI:
 
 ```yaml
 - run: npx fxforge check --strict
@@ -111,14 +143,22 @@ Use `--json` for tooling and `--strict` to fail on warnings. The exit code is `1
 
 ### `fxforge pack [dir]`
 
-Builds `dist/<name>-<version>.zip` containing **only what the manifest actually loads**, plus `stream/`, README and LICENSE. Your notes, source maps, `web/src`, `node_modules` and other dev files stay out. Refuses to pack a resource with errors unless you pass `--force`.
+Builds `dist/<name>-<version>.zip` with **only the files the manifest actually loads**, plus `stream/`, README and LICENSE. Notes, source maps, `web/src`, `node_modules` and other dev files stay out. It refuses to pack a resource with errors unless you pass `--force`.
+
+```
+$ fxforge pack
+
+  ✔ dist/garage-1.0.0.zip
+    13 files · 6.8 KB → 4.9 KB
+    1 file left out (not used by the manifest)
+```
 
 | Flag | |
 |---|---|
 | `--out <dir>` | output folder |
-| `--include <globs>` | comma-separated extra files |
+| `--include <globs>` | extra files, comma-separated |
 | `--all` | ship everything except dev-only files |
-| `--verbose` | list left-out files |
+| `--verbose` | list the files that were left out |
 
 ### `fxforge add <kind> [name]`
 
@@ -130,7 +170,7 @@ fxforge add locale de         # locales/de.lua, copied from en
 fxforge add nui               # web/ + ui_page + files
 ```
 
-The manifest is only patched when the new file is not already covered by a glob.
+The manifest is only edited when the new file is not already covered by a pattern such as `client/*.lua`.
 
 ## Generated layout
 
@@ -149,13 +189,21 @@ my_resource/
 ## Development
 
 ```bash
-git clone https://github.com/<you>/fxforge
+git clone https://github.com/FreshlapeufDev/fxforge
 cd fxforge
 npm test
-npm link        # use your local copy as the global fxforge
+npm link
 ```
 
-No runtime dependency: the manifest parser, glob matcher and zip writer are written from scratch on top of Node's standard library.
+`npm link` makes the global `fxforge` command use your local copy.
+
+There is no runtime dependency: the manifest parser, the glob matcher and the zip writer are written from scratch on top of Node's standard library.
+
+Bug or idea? [Open an issue](https://github.com/FreshlapeufDev/fxforge/issues).
+
+## Related
+
+[**fxguard**](https://github.com/FreshlapeufDev/fxguard) — security scanner for FiveM resources: exploitable net events, SQL injections, backdoors and leaked secrets.
 
 ## License
 
